@@ -5,3 +5,7 @@ outputs.json
 *.js
 !jest.config.js
 last-jobs.json
+cdk.context.json
+.env*
+*.pem
+.aws/

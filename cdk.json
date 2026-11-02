@@ -1,0 +1,8 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/app.ts",
+  "context": {
+    "maxConcurrency": 5,
+    "failureRate": 0.1,
+    "llmSleepSeconds": 30
+  }
+}

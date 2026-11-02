@@ -1,0 +1,30 @@
+{
+  "name": "routed-aws-practice",
+  "version": "0.1.0",
+  "private": true,
+  "bin": { "routed-aws": "bin/app.js" },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy --outputs-file outputs.json",
+    "destroy": "cdk destroy",
+    "load-test": "ts-node scripts/load-test.ts"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^20.14.0",
+    "aws-cdk": "^2.1000.0",
+    "esbuild": "^0.24.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.6.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.650.0",
+    "@aws-sdk/client-s3": "^3.650.0",
+    "@aws-sdk/client-sqs": "^3.650.0",
+    "@aws-sdk/lib-dynamodb": "^3.650.0",
+    "@aws-sdk/s3-request-presigner": "^3.650.0",
+    "aws-cdk-lib": "^2.170.0",
+    "constructs": "^10.4.0"
+  }
+}

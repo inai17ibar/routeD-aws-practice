@@ -1,0 +1,25 @@
+flowchart LR
+  C["クライアント<br/>(負荷テスト)"]
+  subgraph AWS["AWS Cloud (ap-northeast-1)"]
+    API["Lambda upload-api<br/>(Function URL)"]
+    DB[("DynamoDB Jobs<br/>QUEUED→PROCESSING→<br/>DONE / RETRYING / FAILED")]
+    S3IN[("S3 入力<br/>uploads/{jobId}.pdf")]
+    Q["SQS キュー<br/>1ファイル=1メッセージ<br/>可視性 360秒"]
+    W["Lambda worker<br/>batch=1, maxConcurrency N=5<br/>ダミーLLM 30秒 / 10%で429"]
+    S3OUT[("S3 結果<br/>results/{jobId}.csv")]
+    DLQ["DLQ<br/>(3回受信後)"]
+    CW["CloudWatch<br/>Logs / Metrics"]
+    BUD["AWS Budgets<br/>$1 アラート"]
+  end
+  C -- "1. POST ジョブ作成" --> API
+  API -- "2. ジョブ登録 QUEUED" --> DB
+  API -. "3. presigned URL を返す" .-> C
+  C -- "4. PUT ファイル" --> S3IN
+  S3IN -- "5. S3イベント" --> Q
+  Q -- "6. 受信 (batch=1)" --> W
+  W -- "7. 条件付き更新<br/>PROCESSING→DONE/RETRYING" --> DB
+  W -- "8. 結果CSV保存" --> S3OUT
+  W -. "429: 再試行<br/>遅延 10秒×受信回数" .-> Q
+  Q -. "9. 3回受信後" .-> DLQ
+  W -.-> CW
+  API -.-> CW
